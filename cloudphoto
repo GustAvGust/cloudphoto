@@ -1,0 +1,89 @@
+#!/usr/bin/env ruby
+
+require "./init"
+require "./download"
+require "./upload"
+require "./list"
+require "./delete"
+require "./mksite"
+require "./storage"
+
+case ARGV[0]
+when "help"
+  puts "cloudphoto init\n" \
+  "cloudphoto list [--album ALBUM]\n" \
+  "cloudphoto upload --album ALBUM [--path PHOTOS_DIR]\n" \
+  "cloudphoto delete --album ALBUM [--photo PHOTO]\n" \
+  "cloudphoto download --album ALBUM [--path PHOTOS_DIR]\n" \
+  "cloudphoto mksite"
+when "init"
+  Init.call
+when "list"
+  # cloudphoto list [--album ALBUM]
+  params = {}
+  unless ARGV[1].nil?
+    if ARGV[1] == '--album'
+      abort("ALBUM is required with --album") unless ARGV[2]
+      params[:album_name] = ARGV[2]
+    else
+      abort("#{ARGV[1]} is unknown")
+    end
+  end
+  List.call(params)
+when "upload"
+  # cloudphoto upload --album ALBUM [--path PHOTOS_DIR]
+  abort("--album is required") if ARGV[1] != "--album"
+  abort("--album ALBUM is required") unless ARGV[2]
+  params = {}
+  params[:album] = ARGV[2]
+
+  unless ARGV[3].nil?
+    if ARGV[3] == '--path'
+      abort("PHOTOS_DIR is required with --path") unless ARGV[4]
+      params[:photo_dir] = ARGV[4]
+    else
+      abort("#{ARGV[3]} is unknown")
+    end
+  end
+
+  Upload.call(params)
+when "delete"
+  # cloudphoto delete --album ALBUM [--photo PHOTO]
+  abort("--album is required") if ARGV[1] != "--album"
+  abort("--album ALBUM is required") unless ARGV[2]
+  params = {}
+  params[:album_name] = ARGV[2]
+
+  unless ARGV[3].nil?
+    if ARGV[3] == '--photo'
+      abort("PHOTO is required with --photo") unless ARGV[4]
+      params[:photo] = ARGV[4]
+    else
+      abort("#{ARGV[3]} is unknown")
+    end
+  end
+  Delete.call(params)
+when "download"
+  # cloudphoto download --album ALBUM [--path PHOTOS_DIR]
+
+  abort("--album is required") if ARGV[1] != "--album"
+  abort("--album ALBUM is required") unless ARGV[2]
+
+  params = {}
+  params[:album_name] = ARGV[2]
+
+  unless ARGV[3].nil?
+    if ARGV[3] == '--path'
+      abort("PHOTOS_DIR is required with --path") unless ARGV[4]
+      params[:photos_dir] = ARGV[4]
+    else
+      abort("#{ARGV[3]} is unknown")
+    end
+  end
+
+  Download.call(params)
+when "mksite"
+  puts MkSite.call
+else
+  puts "undefined command"
+end

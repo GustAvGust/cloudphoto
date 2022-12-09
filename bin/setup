@@ -1,0 +1,12 @@
+#!/bin/bash
+
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv \
+&& echo 'eval "$(~/.rbenv/bin/rbenv init - bash)"' >> ~/.bashrc \
+&& source ~/.bashrc \
+&& git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build \
+&& rbenv install --list-all \
+&& rbenv install 2.7.5 \
+&& rbenv global 2.7.5 \
+&& gem install "aws-sdk-s3" \
+&& gem install "inifile" \
+&& gem install "base64"
